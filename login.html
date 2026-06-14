@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Cosmic Nexus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a2a 0%, #0a0a0f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: rgba(20, 20, 50, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #aaffff, #8866ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6a4eff;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #6a4eff, #3a2acc);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(106, 78, 255, 0.3);
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .error {
+            color: #ff6a6a;
+        }
+
+        .success {
+            color: #6aff6a;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        .attempt-counter {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 1rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🌌</div>
+        <h2>Acceso al Hub</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Usuario" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Contraseña" required>
+            </div>
+            <button type="submit">🔓 Ingresar</button>
+        </form>
+        <div id="loginMessage" class="message"></div>
+        <div id="attemptCounter" class="attempt-counter">Intentos: 0/5</div>
+        <a href="/" class="back-link">← Volver al inicio</a>
+    </div>
+
+    <script>
+        let attempts = 0;
+        const maxAttempts = 5;
+        const attemptCounter = document.getElementById('attemptCounter');
+        const loginMessage = document.getElementById('loginMessage');
+
+        function updateCounter() {
+            attemptCounter.innerText = `Intentos: ${attempts}/${maxAttempts}`;
+            if (attempts >= maxAttempts) {
+                attemptCounter.style.color = '#ff6a6a';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            attempts++;
+            updateCounter();
+
+            // Simulación de autenticación (sin credenciales reales)
+            if (username === 'admin' && password === 'admin123') {
+                loginMessage.innerHTML = '✅ Acceso concedido a la galaxia central';
+                loginMessage.className = 'message success';
+                document.getElementById('loginForm').reset();
+                attempts = 0;
+                updateCounter();
+            } else {
+                loginMessage.innerHTML = '❌ Credenciales incorrectas. Intenta de nuevo.';
+                loginMessage.className = 'message error';
+            }
+
+            if (attempts >= maxAttempts) {
+                loginMessage.innerHTML = '🔒 Demasiados intentos. Cuenta bloqueada temporalmente.';
+                loginMessage.className = 'message error';
+                document.getElementById('loginForm').querySelector('button').disabled = true;
+                setTimeout(() => {
+                    attempts = 0;
+                    updateCounter();
+                    document.getElementById('loginForm').querySelector('button').disabled = false;
+                    loginMessage.innerHTML = '';
+                }, 60000);
+            }
+        });
+    </script>
+</body>
+</html>
