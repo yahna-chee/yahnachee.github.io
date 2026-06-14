@@ -2,60 +2,78 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Estelar - Constelación de Cygnus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Constelación de Cygnus | Cosmic Nexus</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background: radial-gradient(ellipse at center, #0a0a2a 0%, #000000 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
         }
         #info {
             position: absolute;
             top: 20px;
             left: 20px;
             color: white;
-            background: rgba(0,0,0,0.6);
-            padding: 10px 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 24px;
             border-radius: 8px;
+            backdrop-filter: blur(8px);
             z-index: 10;
             pointer-events: none;
+            font-size: 14px;
+            border-left: 4px solid #ffaa44;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        #controls {
+        #controls-note {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            color: white;
-            background: rgba(0,0,0,0.6);
-            padding: 10px;
-            border-radius: 8px;
+            color: rgba(255,255,255,0.6);
+            background: rgba(0,0,0,0.5);
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 12px;
             z-index: 10;
             pointer-events: none;
+            font-family: monospace;
+        }
+        @media (max-width: 600px) {
+            #info { font-size: 10px; top: 10px; left: 10px; padding: 8px 16px; }
+            #controls-note { font-size: 9px; }
         }
     </style>
 </head>
 <body>
     <div id="info">
-        <h2>✨ Constelación de Cygnus (El Cisne)</h2>
-        <p>Hover sobre las estrellas para ver sus nombres | Relación estelar</p>
+        ✨ Constelación de Cygnus (El Cisne) ✨<br>
+        <small>Hover sobre las estrellas para ver sus nombres</small>
     </div>
-    <div id="controls">
+    <div id="controls-note">
         🖱️ Haz clic y arrastra para rotar | Scroll para zoom
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Usamos Three.js desde CDN confiable con módulos ES (más moderno y compatible) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
 
-    <script>
-        // Escena Three.js para la constelación
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Configuración inicial ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x050510);
-        scene.fog = new THREE.FogExp2(0x050510, 0.0005);
+        scene.fog = new THREE.FogExp2(0x050510, 0.008);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(5, 3, 8);
+        camera.position.set(4, 3, 6);
         camera.lookAt(0, 0, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -63,18 +81,21 @@
         renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
 
-        // Controles de órbita
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
+        // --- Controles con auto-rotación suave ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;          // Inercia
         controls.dampingFactor = 0.05;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
+        controls.autoRotateSpeed = 0.8;
         controls.enableZoom = true;
         controls.enablePan = true;
+        controls.zoomSpeed = 1.2;
+        controls.rotateSpeed = 1.0;
+        controls.target.set(0, 0, 0);
 
-        // Estrellas de fondo (partículas)
+        // --- Fondo de estrellas lejanas (partículas) ---
         const starGeometry = new THREE.BufferGeometry();
-        const starCount = 1500;
+        const starCount = 2000;
         const starPositions = new Float32Array(starCount * 3);
         for (let i = 0; i < starCount; i++) {
             starPositions[i*3] = (Math.random() - 0.5) * 200;
@@ -82,129 +103,172 @@
             starPositions[i*3+2] = (Math.random() - 0.5) * 80 - 40;
         }
         starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.08, transparent: true, opacity: 0.6 });
-        const stars = new THREE.Points(starGeometry, starMaterial);
-        scene.add(stars);
+        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.7 });
+        const starsField = new THREE.Points(starGeometry, starMaterial);
+        scene.add(starsField);
 
-        // Constelación de Cygnus - posiciones estelares (coordenadas normalizadas)
-        const starPos = [
-            { name: "Deneb", x: 1.2, y: 2.5, z: 0, color: 0xffaa66, size: 0.25 },      // α Cygni
-            { name: "Albireo", x: -1.8, y: -1.2, z: 0.3, color: 0xff9966, size: 0.18 },   // β Cygni
-            { name: "Sadr", x: 0, y: 0.5, z: 0, color: 0xffaa88, size: 0.22 },            // γ Cygni
-            { name: "Fawaris", x: 1.5, y: -1.8, z: -0.2, color: 0xffaa66, size: 0.16 },   // δ Cygni
-            { name: "Aljanah", x: -1.2, y: 2.0, z: 0.1, color: 0xffaa66, size: 0.16 },    // ε Cygni
-            { name: "Azelfafage", x: 2.2, y: 0.8, z: -0.3, color: 0x88aaff, size: 0.14 },  // π¹ Cygni
-            { name: "Rukh", x: 0.8, y: -2.2, z: 0.2, color: 0x88aaff, size: 0.14 }        // υ Cygni
+        // --- Datos de la constelación Cygnus ---
+        const starsData = [
+            { name: "Deneb (α Cygni)", x: 1.4, y: 2.6, z: 0.2, color: 0xffaa66, size: 0.32, magnitude: 1.25 },
+            { name: "Albireo (β Cygni)", x: -1.9, y: -1.3, z: -0.1, color: 0xffaa88, size: 0.22, magnitude: 3.05 },
+            { name: "Sadr (γ Cygni)", x: 0.0, y: 0.7, z: -0.3, color: 0xffcc88, size: 0.28, magnitude: 2.23 },
+            { name: "Fawaris (δ Cygni)", x: 1.6, y: -1.9, z: 0.1, color: 0xffaa66, size: 0.20, magnitude: 2.86 },
+            { name: "Aljanah (ε Cygni)", x: -1.3, y: 2.2, z: 0.4, color: 0xffaa66, size: 0.20, magnitude: 2.48 },
+            { name: "Azelfafage (π¹ Cygni)", x: 2.3, y: 0.9, z: -0.5, color: 0xaaccff, size: 0.18, magnitude: 4.67 },
+            { name: "Rukh (υ Cygni)", x: 0.9, y: -2.3, z: 0.3, color: 0xaaccff, size: 0.18, magnitude: 4.42 },
+            { name: "Gienah (ε Cygni)", x: -2.1, y: -0.2, z: -0.2, color: 0xffaa66, size: 0.19, magnitude: 2.48 }
         ];
 
         // Conexiones entre estrellas (índices)
         const connections = [
-            [0, 2], [2, 1], [2, 3], [0, 4], [4, 2], [2, 5], [3, 6], [1, 6], [0, 5], [4, 1]
+            [0, 2], [2, 1], [2, 3], [0, 4], [4, 2], 
+            [2, 5], [3, 6], [1, 7], [0, 5], [4, 1], [7, 2]
         ];
 
         const spheres = [];
         const labels = [];
 
-        // Crear esferas (estrellas)
-        starPos.forEach((star, idx) => {
-            const geometry = new THREE.SphereGeometry(star.size, 32, 32);
+        // --- Crear esferas (estrellas principales) ---
+        starsData.forEach((star, idx) => {
+            const geometry = new THREE.SphereGeometry(star.size, 64, 64);
             const material = new THREE.MeshStandardMaterial({
                 color: star.color,
                 emissive: star.color,
-                emissiveIntensity: 0.3,
-                roughness: 0.3,
-                metalness: 0.8
+                emissiveIntensity: 0.35,
+                roughness: 0.25,
+                metalness: 0.85
             });
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.set(star.x, star.y, star.z);
-            sphere.userData = { name: star.name };
+            sphere.userData = { name: star.name, magnitude: star.magnitude };
             scene.add(sphere);
             spheres.push(sphere);
 
-            // Crear etiqueta HTML (CSS2DRenderer simplificado - usando texto 3D)
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 256;
-            canvas.height = 64;
-            ctx.fillStyle = 'rgba(0,0,0,0.6)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ffaa66';
-            ctx.font = 'Bold 16px "Segoe UI"';
-            ctx.fillText(star.name, 10, 30);
-            ctx.fillStyle = '#aaffff';
-            ctx.font = '12px "Segoe UI"';
-            ctx.fillText('⭐ ' + star.name, 10, 55);
+            // Crear un pequeño halo de brillo (efecto glow)
+            const glowGeometry = new THREE.SphereGeometry(star.size * 1.6, 32, 32);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: star.color,
+                transparent: true,
+                opacity: 0.15,
+                side: THREE.BackSide
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            sphere.add(glow);
 
-            const texture = new THREE.CanvasTexture(canvas);
-            const labelMaterial = new THREE.SpriteMaterial({ map: texture, depthTest: false });
-            const sprite = new THREE.Sprite(labelMaterial);
-            sprite.scale.set(1.2, 0.3, 0.3);
-            sprite.position.set(star.x + 0.2, star.y + 0.3, star.z);
-            scene.add(sprite);
-            labels.push(sprite);
+            // Etiqueta con CSS2DRenderer para texto siempre visible
+            // Creamos un div flotante con CSS2DRenderer
         });
 
-        // Crear líneas de conexión
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x44aaff, transparent: true, opacity: 0.4 });
+        // --- Usamos CSS2DRenderer para las etiquetas (mejor que canvas texture) ---
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+
+        // Crear etiquetas HTML
+        starsData.forEach((star, idx) => {
+            const div = document.createElement('div');
+            div.textContent = star.name;
+            div.style.color = '#ffdd99';
+            div.style.fontSize = '14px';
+            div.style.fontWeight = 'bold';
+            div.style.textShadow = '0 0 8px rgba(0,0,0,0.8)';
+            div.style.background = 'rgba(20,20,50,0.7)';
+            div.style.padding = '4px 12px';
+            div.style.borderRadius = '20px';
+            div.style.borderLeft = `3px solid ${new THREE.Color(star.color).getStyle()}`;
+            div.style.backdropFilter = 'blur(4px)';
+            div.style.fontFamily = 'monospace';
+            div.style.whiteSpace = 'nowrap';
+            
+            const label = new CSS2DObject(div);
+            label.position.set(star.x + 0.25, star.y + 0.35, star.z);
+            scene.add(label);
+            labels.push(label);
+        });
+
+        // --- Crear líneas de conexión entre estrellas ---
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x44aaff, transparent: true, opacity: 0.35 });
         connections.forEach(conn => {
             const points = [];
-            points.push(new THREE.Vector3(starPos[conn[0]].x, starPos[conn[0]].y, starPos[conn[0]].z));
-            points.push(new THREE.Vector3(starPos[conn[1]].x, starPos[conn[1]].y, starPos[conn[1]].z));
+            points.push(new THREE.Vector3(starsData[conn[0]].x, starsData[conn[0]].y, starsData[conn[0]].z));
+            points.push(new THREE.Vector3(starsData[conn[1]].x, starsData[conn[1]].y, starsData[conn[1]].z));
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const line = new THREE.Line(geometry, lineMaterial);
             scene.add(line);
         });
 
-        // Añadir un halo de nebulosa (efecto visual)
-        const nebulaGeometry = new THREE.SphereGeometry(3.5, 32, 32);
+        // --- Nebulosa de fondo (efecto de halo) ---
+        const nebulaGeometry = new THREE.SphereGeometry(4.2, 48, 48);
         const nebulaMaterial = new THREE.MeshPhongMaterial({
             color: 0x2244aa,
             emissive: 0x112244,
             transparent: true,
-            opacity: 0.08,
+            opacity: 0.06,
             side: THREE.BackSide
         });
         const nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
         scene.add(nebula);
 
-        // Iluminación
+        // --- Iluminación ambiental y puntual para dar volumen ---
         const ambientLight = new THREE.AmbientLight(0x222222);
         scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0xffaa66, 1, 30);
-        pointLight.position.set(2, 3, 4);
-        scene.add(pointLight);
-        const backLight = new THREE.PointLight(0x4488ff, 0.5);
-        backLight.position.set(-2, -1, -3);
+        
+        const mainLight = new THREE.DirectionalLight(0xffccaa, 1.2);
+        mainLight.position.set(2, 5, 3);
+        mainLight.castShadow = true;
+        scene.add(mainLight);
+        
+        const fillLight = new THREE.PointLight(0x4488ff, 0.5);
+        fillLight.position.set(-2, 1, -2);
+        scene.add(fillLight);
+        
+        const backLight = new THREE.PointLight(0xffaa66, 0.4);
+        backLight.position.set(0, 2, -3);
         scene.add(backLight);
 
-        // Animación
+        // --- Animación: brillo pulsante y rotación suave del fondo ---
         let time = 0;
         function animate() {
             requestAnimationFrame(animate);
-            time += 0.005;
-            controls.update(); // actualiza automáticamente si autoRotate está activo
-
-            // Efecto de brillo pulsante en las estrellas
+            time += 0.012;
+            
+            // Brillo pulsante en las estrellas
             spheres.forEach((sphere, idx) => {
-                const intensity = 0.3 + Math.sin(time * 2 + idx) * 0.15;
+                const intensity = 0.25 + Math.sin(time * 2.5 + idx) * 0.15;
                 sphere.material.emissiveIntensity = intensity;
             });
-
-            // Rotación muy lenta del fondo estelar
-            stars.rotation.y += 0.0005;
-            stars.rotation.x += 0.0003;
-
+            
+            // Rotación muy lenta del campo estelar de fondo
+            starsField.rotation.y += 0.0008;
+            starsField.rotation.x += 0.0004;
+            
+            // Actualizar controles (maneja auto-rotate si está activo)
+            controls.update();
+            
+            // Renderizar
             renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
         }
+        
         animate();
 
-        // Resize handler
+        // --- Ajustar tamaño al redimensionar ventana ---
         window.addEventListener('resize', onWindowResize, false);
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
         }
+        
+        // Pequeño efecto de consola para saber que cargó
+        console.log('🌌 Constelación de Cygnus cargada correctamente con Three.js');
     </script>
 </body>
 </html>
