@@ -146,7 +146,7 @@ python soc_chatbot_local.py
 | **📝 Tokens por consulta** | ~180 | Respuestas concisas y directas |
 | **📄 Documentos indexados** | 9 playbooks | ~50+ chunks por documento |
 
-## 🧪 Consultas de Prueba
+## 🧪 Consultas de prueba
 | # | Pregunta | Respuesta esperada | Fuente |
 |---|----------|-------------------|--------|
 | 1 | *¿Cuáles son las fases de respuesta a incidentes?* | Preparación, Identificación, Contención, Erradicación, Recuperación, Lecciones Aprendidas | `01_malware_outbreak_playbook.pdf` |
