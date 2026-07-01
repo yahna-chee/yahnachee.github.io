@@ -81,15 +81,15 @@ IA/
 ```
 
 ## ⚙️ Funcionamiento del sistema
-1. Procesamiento de documentos (RAG)
+1. **Procesamiento de documentos (RAG)**
 ```bash
 PDF → Extracción de texto → Chunking (300 palabras) → Embeddings → ChromaDB
 ```
-2. Consulta del usuario
+2. **Consulta del usuario**
 ```bash
 Pregunta → Embeddings → Búsqueda en ChromaDB (top_k=2) → Contexto → Llama 3.2 → Respuesta
 ```
-3. Optimizaciones implementadas
+3. **Optimizaciones implementadas**
 - **Parámetros de inferencia ajustados:**
   - `temperature: 0.1` (respuestas precisas y deterministas)
   - `num_predict: 180` (respuestas concisas para reducir latencia)
@@ -104,41 +104,41 @@ Pregunta → Embeddings → Búsqueda en ChromaDB (top_k=2) → Contexto → Lla
 
 ## 🚀 Instalación y ejecución
 - **Opción 1: Google Colab (recomendada)**
-# 1. Abrir Google Colab:
+  1. **Abrir Google Colab:**
      - Crear un nuevo notebook
-# 2. Configurar GPU:
+  2. **Configurar GPU:**
      - Entorno de ejecución → Cambiar tipo de entorno
      - Seleccionar GPU (T4)
-# 3. Ejecutar el código:
+  3. **Ejecutar el código:**
      - Copiar y pegar el código completo en una celda
      - Ejecutar la celda (Shift + Enter)
-# 4. Acceder al chatbot:
+  4. **Acceder al chatbot:**
      - Al final de la ejecución, se generará un enlace público
      - Hacer clic en el enlace o copiarlo en el navegador
 
 - **Opción 2: Local (requiere GPU NVIDIA)**
-1. Instalar Ollama
+  1. **Instalar Ollama**
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
-2. Descargar el modelo
+  2. **Descargar el modelo**
 ```bash
 ollama pull llama3.2
 ```
-3. Instalar dependencias Python
+  3. **Instalar dependencias Python**
 ```bash
 pip install chromadb sentence-transformers pypdf flask
 ```
-4. Clonar repositorio
+  4. **Clonar repositorio**
 ```bash
 git clone https://github.com/yahna-chee/yahnachee.github.io/tree/main/IA/soc-chatbot
 ```
-# 5. Ejecutar
+  5. **Ejecutar**
 ```bash
 python soc_chatbot_local.py
 ```
 
-## 📊 Evaluación y Resultados
+## 📊 Evaluación y resultados
 | Métrica | Valor | Descripción |
 |:--------|:------|:------------|
 | **⏱️ Tiempo de respuesta** | ~2-3 segundos | Con GPU T4 de Google Colab |
@@ -147,24 +147,24 @@ python soc_chatbot_local.py
 | **📄 Documentos indexados** | 9 playbooks | ~50+ chunks por documento |
 
 ## 🧪 Consultas de Prueba
-| # | Pregunta | Respuesta Esperada | Fuente |
+| # | Pregunta | Respuesta esperada | Fuente |
 |---|----------|-------------------|--------|
 | 1 | *¿Cuáles son las fases de respuesta a incidentes?* | Preparación, Identificación, Contención, Erradicación, Recuperación, Lecciones Aprendidas | `01_malware_outbreak_playbook.pdf` |
 | 2 | *¿Qué es un playbook de respuesta?* | Procedimiento estructurado para manejar incidentes de seguridad | `02_phishing_playbook.pdf` |
 | 3 | *¿Cómo se usa MITRE ATT&CK en un SOC?* | Framework de conocimiento de tácticas y técnicas de adversarios | `06_unauthorized_access_playbook.pdf` |
 
 ## 🔧 Personalización
-Cambiar modelo
+ - **Cambiar modelo**
 ```bash
 # En el código, modificar la línea 33:
 MODELO_LLM = "llama3.2"  # Opciones: "phi3:mini", "tinyllama", "llama3.2"
 ```
-Agregar documentos
-- Colocar los PDFs en la carpeta IA/soc-chatbot/docs/
-- Ejecutar nuevamente el código
-- El sistema indexará automáticamente los nuevos documentos
+ - **Agregar documentos**
+   - Colocar los PDFs en la carpeta IA/soc-chatbot/docs/
+   - Ejecutar nuevamente el código
+   - El sistema indexará automáticamente los nuevos documentos
 
-# Ajustar parámetros
+ - **Ajustar parámetros**
 ```bash
 # En la función consultar(), línea 92-95:
 "options": {
@@ -183,7 +183,7 @@ Agregar documentos
 | **🔍 Explicabilidad** | Se muestran las fuentes de información utilizadas |
 
 ### 🎯 Alineación con MITRE ATT&CK
-| Táctica MITRE | Aplicación en el Proyecto |
+| Táctica MITRE | Aplicación en el proyecto |
 |:--------------|:--------------------------|
 | **T1071** | Uso de HTTP/HTTPS para comunicación |
 | **T1048** | Prevención de exfiltración mediante consultas controladas |
