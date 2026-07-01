@@ -47,46 +47,18 @@ Demostrar la aplicación práctica de modelos de Inteligencia Artificial (IA) y 
   </tbody>
 </table>
 
-## 🛠️ Tecnologías Utilizadas
+## 🛠️ Tecnologías utilizadas
 <img width="2801" height="917" alt="deepseek_mermaid_20260630_c58d40" src="https://github.com/user-attachments/assets/630aa8f0-e593-4724-804d-f613ff3bc77c" />
 
-<div style="display: flex; flex-wrap: wrap; gap: 10px;">
-<div style="background: #1a2a4a; padding: 10px; border-radius: 8px; border: 1px solid #1e3a5f;">
-    <strong>🧠 LLM</strong><br>
-    Llama 3.2 (3B)
-</div>
-  
-<div style="background: #1a2a4a; padding: 10px; border-radius: 8px; border: 1px solid #1e3a5f;">
-    <strong>⚙️ Framework</strong><br>
-    Ollama 0.30.8+
-</div>
-
-<div style="background: #1a2a4a; padding: 10px; border-radius: 8px; border: 1px solid #1e3a5f;">
-    <strong>📚 Embeddings</strong><br>
-    Sentence Transformers 2.2.2
-</div>
-
-<div style="background: #1a2a4a; padding: 10px; border-radius: 8px; border: 1px solid #1e3a5f;">
-    <strong>🗄️ Vector DB</strong><br>
-    ChromaDB 0.5.0
-</div>
-
-<div style="background: #1a2a4a; padding: 10px; border-radius: 8px; border: 1px solid #1e3a5f;">
-    <strong>🌐 Web Server</strong><br>
-    Flask 3.0.0
-</div>
-
-<div style="background: #1a2a4a; padding: 10px; border-radius: 8px; border: 1px solid #1e3a5f;">
-    <strong>📄 PDF Processing</strong><br>
-    PyPDF 3.17.4
-</div>
-
-<div style="background: #1a2a4a; padding: 10px; border-radius: 8px; border: 1px solid #1e3a5f;">
-    <strong>☁️ Runtime</strong><br>
-    Google Colab (GPU T4)
-</div>
-
-</div>
+| 🔧 Componente | 📦 Tecnología | 📌 Versión |
+|:--------------|:--------------|:-----------|
+| 🧠 **LLM** | Llama 3.2 | 3B |
+| ⚙️ **Framework** | Ollama | 0.30.8+ |
+| 📚 **Embeddings** | Sentence Transformers | 2.2.2 |
+| 🗄️ **Vector DB** | ChromaDB | 0.5.0 |
+| 🌐 **Web Server** | Flask | 3.0.0 |
+| 📄 **PDF Processing** | PyPDF | 3.17.4 |
+| ☁️ **Runtime** | Google Colab | GPU T4 |
 
 ## 📂 Estructura del Proyecto
 ```bash
