@@ -209,10 +209,10 @@ https://www.incidentresponse.com/playbooks/
 Este proyecto fue desarrollado como parte del curso IA Aplicada a la Ciberseguridad.
 - **Estudiante**: Yahna Chee
 
-## 📊 Diagrama de Arquitectura
+## 📊 Diagrama de arquitectura
 <img width="4254" height="2676" alt="deepseek_mermaid_20260630_45bc68" src="https://github.com/user-attachments/assets/63cf0ab6-2644-4e00-89cd-96a3ffb206d9" />
 
-## 🎓 Reflexión Académica
+## 🎓 Reflexión académica
 Este proyecto demuestra la aplicación práctica de técnicas de Inteligencia Artificial en el ámbito de la ciberseguridad, específicamente en la automatización de consultas de documentación técnica para SOC. La implementación de un sistema RAG con modelo Llama 3.2 optimizado para GPU muestra cómo la IA puede reducir significativamente los tiempos de respuesta y mejorar la eficiencia de los analistas de seguridad.
 
 ### 🛡️ SOC Chatbot de IA v2 | Parcial 3 - IA Aplicada a Ciberseguridad
