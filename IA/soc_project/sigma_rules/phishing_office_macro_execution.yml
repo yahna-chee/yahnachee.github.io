@@ -1,0 +1,41 @@
+title: Office Application Spawning Suspicious Child Process (Phishing Payload)
+id: 3a2f9b10-4c7e-4a1d-9e3a-7f2b1c5d8e21
+status: experimental
+description: |
+  Detecta cuando una aplicacion de Microsoft Office (Word, Excel, Powerpoint) lanza un proceso hijo
+  de tipo interprete de comandos o script. Este es el patron de ejecucion mas comun cuando una victima
+  abre un documento adjunto malicioso enviado por phishing y habilita macros.
+author: Proyecto academico - IA Aplicada a Ciberseguridad, UTP FISC
+date: 2026/07/05
+references:
+  - https://attack.mitre.org/techniques/T1566/001/
+  - https://attack.mitre.org/techniques/T1204/002/
+  - https://github.com/SigmaHQ/sigma
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\WINWORD.EXE'
+      - '\EXCEL.EXE'
+      - '\POWERPNT.EXE'
+      - '\OUTLOOK.EXE'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+  condition: selection_parent and selection_child
+falsepositives:
+  - Macros legitimas usadas en flujos de negocio automatizados (poco comun, revisar caso por caso)
+level: high
+tags:
+  - attack.initial_access
+  - attack.execution
+  - attack.t1566.001
+  - attack.t1204.002

@@ -1,0 +1,66 @@
+title: Suspicious Privilege Elevation Utility Invocation
+id: 7c1e4d92-8b3a-4f6c-b1d5-2a9e7c4f6b03
+status: experimental
+description: |
+  Detecta el uso de utilidades legitimas del sistema (Linux: sudo, pkexec; Windows: fodhelper, sdclt)
+  con patrones de linea de comando asociados a tecnicas conocidas de abuso de mecanismos de elevacion
+  de privilegios (UAC bypass, exploits de utilidades setuid). Inspirado en patrones documentados
+  publicamente por la comunidad de deteccion (ver referencias).
+author: Proyecto academico - IA Aplicada a Ciberseguridad, UTP FISC
+date: 2026/07/05
+references:
+  - https://attack.mitre.org/techniques/T1548/001/
+  - https://attack.mitre.org/techniques/T1548/002/
+  - https://github.com/SigmaHQ/sigma/blob/master/rules/windows/process_creation/proc_creation_win_susp_privilege_escalation_cli_patterns.yml
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_uac_bypass:
+    Image|endswith:
+      - '\fodhelper.exe'
+      - '\sdclt.exe'
+      - '\eventvwr.exe'
+    ParentImage|endswith:
+      - '\explorer.exe'
+  selection_token_abuse:
+    CommandLine|contains:
+      - 'whoami /priv'
+      - 'SeDebugPrivilege'
+      - 'SeImpersonatePrivilege'
+  condition: 1 of selection_*
+falsepositives:
+  - Administradores de sistema realizando diagnostico legitimo de privilegios
+  - Herramientas de auditoria de seguridad autorizadas
+level: high
+tags:
+  - attack.privilege_escalation
+  - attack.t1548.001
+  - attack.t1548.002
+---
+title: Linux Privilege Escalation Via Suspicious Pkexec Invocation
+id: 9f4a2c11-6d8b-4e5a-9c3f-1b7d5e8a4f22
+status: experimental
+description: |
+  Detecta invocaciones de pkexec con variables de entorno anomalas, patron asociado a exploits
+  de escalada de privilegios locales conocidos publicamente (ej. CVE-2021-4034 / PwnKit).
+author: Proyecto academico - IA Aplicada a Ciberseguridad, UTP FISC
+date: 2026/07/05
+references:
+  - https://attack.mitre.org/techniques/T1548/001/
+  - https://github.com/SigmaHQ/sigma/blob/master/rules/linux/builtin/lnx_pwnkit_local_privilege_escalation.yml
+logsource:
+  product: linux
+  service: auth
+detection:
+  selection:
+    keyword|contains:
+      - 'pkexec'
+      - 'XAUTHORITY'
+  condition: selection
+falsepositives:
+  - Desconocido
+level: high
+tags:
+  - attack.privilege_escalation
+  - attack.t1548.001
