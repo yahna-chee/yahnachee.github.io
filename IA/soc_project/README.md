@@ -49,7 +49,7 @@ Arquitectura desplegada sobre **AWS Cloud**, distribuida en 5 instancias indepen
 | 5 | **Splunk SOAR** | Amazon Linux | Playbooks · Assets · Connectors |
 | * | **Jupyter Notebook** | Windows | Modelo ML · Dashboard |
 
-**Flujo general:** el tráfico y eventos generados/simulados en la Instancia 5 (Windows Server, vía Sysmon y Splunk UF) se envían a Wazuh (Instancia 1) y Splunk (Instancia 2) para correlación; MITRE Caldera (Instancia 4) simula técnicas de ataque (TTPs) sobre el entorno; las alertas resultantes alimentan el modelo de triage servido desde Jupyter Notebook / Google Colab (*opcional); y las acciones de respuesta se orquestan vía Splunk SOAR (Instancia 3).
+**Flujo general:** el tráfico y eventos generados/simulados en la Instancia 2 (Windows Server, vía Sysmon y Splunk UF) se envían a Wazuh (Instancia 3) y Splunk (Instancia 4) para correlación; MITRE Caldera (Instancia 1) simula técnicas de ataque (TTPs) sobre el entorno; las alertas resultantes alimentan el modelo de triage servido desde Jupyter Notebook / Google Colab (*opcional); y las acciones de respuesta se orquestan vía Splunk SOAR (Instancia 5).
 
 ## 📌 Nota
 - Versión: 1.0
