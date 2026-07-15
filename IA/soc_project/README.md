@@ -36,35 +36,20 @@ El eslabón final del flujo se consolida en el entorno **Splunk SOAR**. Al recib
 ## 🗺️ Diagrama de arquitectura de telemetría y orquestación
 <img width="1933" height="2209" alt="deepseek_mermaid_20260715_16611b" src="https://github.com/user-attachments/assets/04c03acd-2d02-4877-855f-796f14d6fec4" />
 
-## 🏗️ Despliegue de la arquitectura (AWS Cloud)
+## 🏗️ Despliegue de la arquitectura
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                 │
-│                                   AWS CLOUD                                     │
-│                                                                                 │
-│   ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                 │
-│   │   INSTANCE 1    │  │   INSTANCE 2    │  │   INSTANCE 3    │                 │
-│   │                 │  │                 │  │                 │                 │
-│   │   WAZUH SIEM    │  │   SPLUNK        │  │   SPLUNK SOAR   │                 │
-│   │   (Ubuntu)      │  │   Enterprise    │  │   (Amazon Linux)│                 │
-│   │                 │  │   (Ubuntu)      │  │                 │                 │
-│   │  • Manager      │  │  • Indexer      │  │  • Playbooks    │                 │
-│   │  • Indexer      │  │  • Search Head  │  │  • Assets       │                 │
-│   │  • Dashboard    │  │  • HEC          │  │  • Connectors   │                 │
-│   └─────────────────┘  └─────────────────┘  └─────────────────┘                 │
-│                                                                                 │
-│   ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                 │
-│   │   INSTANCE 4    │  │   INSTANCE 5    │  │   INSTANCE 6    │                 │
-│   │                 │  │                 │  │                 │                 │
-│   │  MITRE CALDERA  │  │   WINDOWS       │  │   JUPYTER       │                 │
-│   │   (Ubuntu)      │  │   SERVER 2025   │  │   + VOILÀ       │                 │
-│   │                 │  │                 │  │   (Ubuntu)      │                 │
-│   │  • Server       │  │  • Sysmon       │  │                 │                 │
-│   │  • Agents       │  │  • Wazuh Agent  │  │  • ML Model     │                 │
-│   │  • Operations   │  │  • Splunk UF    │  │  • Dashboard    │                 │
-│   └─────────────────┘  └─────────────────┘  └─────────────────┘                 │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+Arquitectura desplegada sobre **AWS Cloud**, distribuida en 5 instancias independientes:
+
+| Instancia | Servicio | Sistema operativo | Componentes |
+|---|---|---|---|
+| 1 | **Wazuh SIEM** | Ubuntu | Manager · Indexer · Dashboard |
+| 2 | **Splunk Enterprise** | Ubuntu | Indexer · Search Head · HEC |
+| 3 | **Splunk SOAR** | Amazon Linux | Playbooks · Assets · Connectors |
+| 4 | **MITRE Caldera** | Ubuntu | Server · Agents · Operations |
+| 5 | **Windows Server 2025** | Windows | Sysmon · Wazuh Agent · Splunk UF |
+| * | **Jupyter + Voilà** | Ubuntu | Modelo ML · Dashboard |
+
+**Flujo general:** el tráfico y eventos generados/simulados en la Instancia 5 (Windows Server, vía Sysmon y Splunk UF) se envían a Wazuh (Instancia 1) y Splunk (Instancia 2) para correlación; MITRE Caldera (Instancia 4) simula técnicas de ataque (TTPs) sobre el entorno; las alertas resultantes alimentan el modelo de triage servido desde Jupyter + Voilà (*opcional); y las acciones de respuesta se orquestan vía Splunk SOAR (Instancia 3).
 
 ## 📌 Nota
 Versión: 1.0
